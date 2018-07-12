@@ -44,7 +44,6 @@ type DriverInstance struct {
 const (
 	DriverBinary      = "/opt/driver/bin/driver"
 	GRPCSocket        = "rpc.sock"
-	TmpPathPattern    = "/tmp/%s"
 	ConnectionTimeout = 5 * time.Second
 )
 
@@ -64,13 +63,13 @@ func NewDriverInstance(r *runtime.Runtime, lang string, i runtime.DriverImage, o
 			"--log-format", o.LogFormat,
 			"--log-fields", logFields(id, lang),
 			"--network", "unix",
-			"--address", fmt.Sprintf(TmpPathPattern, GRPCSocket),
+			"--address", fmt.Sprintf(r.Tmp, GRPCSocket),
 		},
 		Stdout: os.Stdout,
 		Stderr: os.Stderr,
 	}
 
-	tmp := filepath.Join(r.Root, fmt.Sprintf(TmpPathPattern, id))
+	tmp := filepath.Join(r.Tmp, id)
 
 	f := func(containerID string) *configs.Config {
 		cfg := runtime.ContainerConfigFactory(containerID)

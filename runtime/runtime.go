@@ -15,7 +15,7 @@ import (
 const (
 	storagePath    = "images"
 	containersPath = "containers"
-	temporalPath   = "tmp"
+	temporalPath   = "/tmp"
 )
 
 type ConfigFactory func(containerID string) *configs.Config
@@ -23,6 +23,7 @@ type ConfigFactory func(containerID string) *configs.Config
 type Runtime struct {
 	ContainerConfigFactory ConfigFactory
 	Root                   string
+	Tmp                    string
 
 	s *storage
 	f libcontainer.Factory
@@ -34,9 +35,10 @@ func NewRuntime(path string) *Runtime {
 		ContainerConfigFactory: ContainerConfigFactory,
 
 		Root: path,
+		Tmp:  temporalPath,
 		s: newStorage(
 			filepath.Join(path, storagePath),
-			filepath.Join(path, temporalPath),
+			temporalPath,
 		),
 	}
 }
